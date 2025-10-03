@@ -95,6 +95,7 @@ tasks.register('createExecutable', Exec) {
             '--name', "ClipVault",
             '--type', targetType.toString(),
             '--dest', "$buildFolder/jpackage",
+            '--app-version', "$project.version",
             '--java-options', '--enable-native-access=ALL-UNNAMED',
             '--java-options', '--enable-native-access=javafx.graphics',
     ] + osDependentArgs
