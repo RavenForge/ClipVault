@@ -6,6 +6,9 @@ on:
       - "v*.*.*" # ex: v1.0.0
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     strategy:
@@ -53,15 +56,6 @@ jobs:
           name: windows-latest-artifacts
           path: release-artifacts/windows
 
-      - name: Create release
-        id: create_release
-        uses: softprops/action-gh-release@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: |
-            release-artifacts/linux/*
-            release-artifacts/windows/*
-
       - name: Zip Linux
         run: |
           cd release-artifacts/linux
@@ -71,3 +65,12 @@ jobs:
         run: |
           cd release-artifacts/windows
           zip -r ClipVault-${GITHUB_REF_NAME}-windows.zip *
+
+      - name: Create release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            release-artifacts/linux/*.zip
+            release-artifacts/windows/*.zip
