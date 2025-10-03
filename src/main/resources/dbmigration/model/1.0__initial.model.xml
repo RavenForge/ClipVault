@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <createTable name="snippet" pkName="pk_snippet">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="name" type="varchar" notnull="true"/>
+            <column name="value" type="clob" notnull="true"/>
+            <column name="tab_id" type="bigint" notnull="true" references="tab.id" foreignKeyName="fk_snippet_tab_id" foreignKeyIndex="ix_snippet_tab_id"/>
+            <column name="created_at" type="timestamp" notnull="true"/>
+        </createTable>
+        <createTable name="tab" pkName="pk_tab">
+            <column name="id" type="bigint" primaryKey="true"/>
+            <column name="name" type="varchar" notnull="true" unique="uq_tab_name"/>
+            <column name="password" type="clob"/>
+        </createTable>
+    </changeSet>
+</migration>

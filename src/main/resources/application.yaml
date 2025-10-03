@@ -1,0 +1,9 @@
+ebean:
+  migration:
+    run: true
+datasource:
+  db:
+    username: ""
+    password: ""
+    url: jdbc:sqlite:./clipvault.db
+    driver: org.sqlite.JDBC

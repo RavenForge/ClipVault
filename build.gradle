@@ -1,0 +1,106 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'io.ebean' version '17.1.0'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+group = 'com.ravenforge'
+version = '0.1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.ebean:ebean-sqlite:17.1.0'
+    implementation 'io.ebean:ebean-querybean:17.1.0'
+    implementation 'io.ebean:ebean-ddl-generator:17.1.0'
+    implementation 'io.ebean:ebean-migration:14.3.0'
+    implementation 'org.xerial:sqlite-jdbc:3.50.3.0'
+
+    implementation 'io.github.mkpaz:atlantafx-base:2.1.0'
+    implementation 'org.kordamp.ikonli:ikonli-javafx:12.4.0'
+    implementation 'org.kordamp.ikonli:ikonli-feather-pack:12.4.0'
+
+    annotationProcessor 'io.ebean:querybean-generator:17.1.0'
+
+    compileOnly 'org.projectlombok:lombok:1.18.42'
+    annotationProcessor 'org.projectlombok:lombok:1.18.42'
+}
+
+application {
+    mainClass = 'com.ravenforge.clipvault.Launcher'
+    applicationDefaultJvmArgs = [
+            '--enable-native-access=ALL-UNNAMED,javafx.graphics'
+    ]
+}
+
+tasks.withType(Jar).configureEach {
+    manifest {
+        attributes(
+                'Main-Class': application.mainClass.get()
+        )
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+tasks.register('generateMigration', JavaExec) {
+    group = 'application'
+    description = 'Generate Database Migrations'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'com.ravenforge.clipvault.Migrate'
+}
+
+tasks.register('createExecutable', Exec) {
+    group = 'distribution'
+    description = 'Generate the application using Jpackage'
+
+    dependsOn build
+
+    def buildFolder = layout.buildDirectory.get().asFile
+    doFirst {
+        mkdir("$buildFolder/jpackage")
+    }
+
+    def targetType = project.findProperty("packageType") ?: (
+            org.gradle.internal.os.OperatingSystem.current().isWindows() ? "exe" : "app-image"
+    )
+
+    def osDependentArgs = []
+    if (targetType == "app-image") {
+        osDependentArgs = [
+                '--java-options', '-Dprism.allowhidpi=true',
+                '--java-options', '-Dglass.gtk.uiScale=1.2',
+                '--icon', "$projectDir/src/main/resources/safe_128.png"]
+    } else {
+        osDependentArgs = [
+                '--java-options', '-Dprism.allowhidpi=true',
+                '--icon', "$projectDir/src/main/resources/safe_128.ico"]
+    }
+
+    commandLine = [
+            "${System.properties['java.home']}/bin/jpackage",
+            '--input', "$buildFolder/libs",
+            '--main-jar', "${project.name}-${project.version}.jar",
+            '--main-class', application.mainClass.get(),
+            '--name', "ClipVault",
+            '--type', targetType.toString(),
+            '--dest', "$buildFolder/jpackage",
+            '--java-options', '--enable-native-access=ALL-UNNAMED',
+            '--java-options', '--enable-native-access=javafx.graphics',
+    ] + osDependentArgs
+}
+
+javafx {
+    version = "25"
+    modules = [ 'javafx.controls' ]
+}
