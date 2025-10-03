@@ -49,6 +49,7 @@ jobs:
           release_name: ${{ github.ref_name }}
           draft: false
           prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download Linux artifacts
         uses: actions/download-artifact@v4
@@ -68,6 +69,7 @@ jobs:
           asset_path: release-artifacts/linux/ClipVault-linux-${GITHUB_REF_NAME}.zip
           asset_name: ClipVault-${{ github.ref_name }}-linux.zip
           asset_content_type: application/zip
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download Windows artifacts
         uses: actions/download-artifact@v4
@@ -87,3 +89,4 @@ jobs:
           asset_path: release-artifacts/windows/ClipVault-windows-${GITHUB_REF_NAME}.zip
           asset_name: ClipVault-${{ github.ref_name }}-windows.zip
           asset_content_type: application/zip
+          token: ${{ secrets.GITHUB_TOKEN }}
