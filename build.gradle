@@ -11,7 +11,7 @@ java {
 }
 
 group = 'com.ravenforge'
-version = '0.1.0'
+version = '0.1.1'
 
 repositories {
     mavenCentral()
@@ -84,7 +84,8 @@ tasks.register('createExecutable', Exec) {
     } else {
         osDependentArgs = [
                 '--java-options', '-Dprism.allowhidpi=true',
-                '--icon', "$projectDir/src/main/resources/safe_128.ico"]
+                '--icon', "$projectDir/src/main/resources/safe_128.ico",
+                '--win-dir-chooser', '--win-menu', '--win-shortcut', '--win-shortcut-prompt']
     }
 
     commandLine = [
@@ -96,6 +97,8 @@ tasks.register('createExecutable', Exec) {
             '--type', targetType.toString(),
             '--dest', "$buildFolder/jpackage",
             '--app-version', "$project.version",
+            '--vendor', 'RavenForge',
+            '--copyright', '© 2025 RavenForge',
             '--java-options', '--enable-native-access=ALL-UNNAMED',
             '--java-options', '--enable-native-access=javafx.graphics',
     ] + osDependentArgs

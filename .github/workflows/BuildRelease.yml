@@ -40,6 +40,13 @@ jobs:
           name: ${{ matrix.os }}-artifacts
           path: build/jpackage/*
 
+      - name: Upload JAR
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: jar-artifact
+          path: build/libs/*.jar
+
   release:
     needs: build
     runs-on: ubuntu-latest
@@ -55,6 +62,12 @@ jobs:
         with:
           name: windows-latest-artifacts
           path: release-artifacts/windows
+
+      - name: Download JAR
+        uses: actions/download-artifact@v4
+        with:
+          name: jar-artifact
+          path: release-artifacts/jar
 
       - name: Zip Linux
         run: |
@@ -74,3 +87,4 @@ jobs:
           files: |
             release-artifacts/linux/*.zip
             release-artifacts/windows/*.zip
+            release-artifacts/jar/*.jar

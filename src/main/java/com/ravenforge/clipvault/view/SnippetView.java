@@ -173,7 +173,7 @@ public class SnippetView extends VBox {
                 NotificationComponent.createNotification(stackPaneChildren, Feather.POCKET,"Snippet Deleted", Styles.SUCCESS);
             }
         });
-        copyButton.setOnAction(_ -> copyToClipboard(value));
+        copyButton.setOnAction(_ -> copyToClipboard(snippetArea.getText()));
 
         var iconButtonBar = IconButtonBarComponent.createIconButtonBar(editButton, deleteButton, copyButton);
 

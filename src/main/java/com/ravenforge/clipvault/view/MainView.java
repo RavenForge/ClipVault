@@ -42,18 +42,20 @@ public class MainView extends BorderPane {
                 stackPaneChildren = stackPane.getChildren();
                 setCenter(stackPane);
                 NotificationComponent.SCROLL_MARGIN = 0d;
+                setBottom(null);
                 return;
             }
 
             setCenter(tabPane);
+            setBottom(pagination);
         });
 
         List<Tab> tabs = new QTab().select().findList();
         tabs.stream().filter(tab -> tab.getPassword() == null).forEach(tab -> javaFXTabs.add(createTab(tab, null)));
 
         setTop(new ClipVaultMenuView(tabs, this::openTab, this::openTab, this::newTab));
-        setCenter(tabs.isEmpty() ? stackPane: tabPane);
-        setBottom(pagination);
+        setCenter(tabs.isEmpty() ? stackPane : tabPane);
+        setBottom(tabs.isEmpty() ? null : pagination);
     }
 
     private javafx.scene.control.Tab createTab(Tab tab, String password) {
