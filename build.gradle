@@ -98,7 +98,6 @@ tasks.register('createExecutable', Exec) {
             '--dest', "$buildFolder/jpackage",
             '--app-version', "$project.version",
             '--vendor', 'RavenForge',
-            '--copyright', '© 2025 RavenForge',
             '--java-options', '--enable-native-access=ALL-UNNAMED',
             '--java-options', '--enable-native-access=javafx.graphics',
     ] + osDependentArgs
