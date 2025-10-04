@@ -23,7 +23,7 @@ jobs:
       - name: Set JDK
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
+          distribution: corretto
           java-version: 25
 
       - name: Gradle Build
