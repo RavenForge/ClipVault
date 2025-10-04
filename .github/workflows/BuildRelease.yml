@@ -32,7 +32,7 @@ jobs:
           arguments: build
 
       - name: Create executable
-        run: ./gradlew createExecutable --no-daemon
+        run: ./gradlew clean createExecutable --no-daemon
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
