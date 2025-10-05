@@ -85,7 +85,11 @@ tasks.register('createExecutable', Exec) {
         osDependentArgs = [
                 '--java-options', '-Dprism.allowhidpi=true',
                 '--icon', "$projectDir/src/main/resources/safe_128.ico",
-                '--win-dir-chooser', '--win-menu', '--win-shortcut', '--win-shortcut-prompt']
+                '--win-per-user-install',
+                '--win-dir-chooser',
+                '--win-menu',
+                '--win-shortcut',
+                '--win-shortcut-prompt']
     }
 
     commandLine = [
