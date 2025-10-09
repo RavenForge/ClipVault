@@ -19,4 +19,4 @@
 
 ## 📦 Releases
 
-Stable builds are available under the [Releases]([https://github.com/RavenForge/Cl](https://github.com/RavenForge/Cl)
+Stable builds are available under the [Releases](https://github.com/RavenForge/ClipVault/releases)
