@@ -80,6 +80,7 @@ tasks.register('createExecutable', Exec) {
         osDependentArgs = [
                 '--java-options', '-Dprism.allowhidpi=true',
                 '--java-options', '-Dglass.gtk.uiScale=1.2',
+                '--copyright', '© 2025 RavenForge',
                 '--icon', "$projectDir/src/main/resources/safe_128.png"]
     } else {
         osDependentArgs = [

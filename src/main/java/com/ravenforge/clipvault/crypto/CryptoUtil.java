@@ -2,20 +2,21 @@ package com.ravenforge.clipvault.crypto;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import javax.crypto.spec.IvParameterSpec;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
 
 public class CryptoUtil {
-
-    private static final String ALGO = "AES/CBC/PKCS5Padding";
+    private static final String ALGO = "AES/GCM/NoPadding";
     private static final int KEY_SIZE = 256;
     private static final int ITERATIONS = 65536;
     private static final int SALT_LEN = 16;
-    private static final int IV_LEN = 16;
+    private static final int IV_LEN = 12;
+    private static final int TAG_BIT_LENGTH = 128;
 
     public static String encrypt(String value, String password) {
         try {
@@ -27,9 +28,10 @@ public class CryptoUtil {
             Cipher cipher = Cipher.getInstance(ALGO);
             byte[] iv = new byte[IV_LEN];
             new SecureRandom().nextBytes(iv);
-            cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
+            GCMParameterSpec spec = new GCMParameterSpec(TAG_BIT_LENGTH, iv);
+            cipher.init(Cipher.ENCRYPT_MODE, key, spec);
 
-            byte[] encrypted = cipher.doFinal(value.getBytes());
+            byte[] encrypted = cipher.doFinal(value.getBytes(StandardCharsets.UTF_8));
 
             byte[] result = new byte[salt.length + iv.length + encrypted.length];
             System.arraycopy(salt, 0, result, 0, salt.length);
@@ -57,9 +59,11 @@ public class CryptoUtil {
             SecretKeySpec key = deriveKey(password, salt);
 
             Cipher cipher = Cipher.getInstance(ALGO);
-            cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
+            GCMParameterSpec spec = new GCMParameterSpec(TAG_BIT_LENGTH, iv);
+            cipher.init(Cipher.DECRYPT_MODE, key, spec);
 
-            return new String(cipher.doFinal(encrypted));
+            byte[] decrypted = cipher.doFinal(encrypted);
+            return new String(decrypted, StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new RuntimeException("Error to decrypt: invalid password or data", e);
         }
@@ -81,7 +85,6 @@ public class CryptoUtil {
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
             byte[] hash = factory.generateSecret(spec).getEncoded();
 
-            // Concatena salt + hash
             byte[] result = new byte[salt.length + hash.length];
             System.arraycopy(salt, 0, result, 0, salt.length);
             System.arraycopy(hash, 0, result, salt.length, hash.length);
